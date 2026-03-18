@@ -1,0 +1,151 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #333;
+  height: 100vh;
+  overflow-y: hidden;
+  font-family: Inter;
+  background-image: url("https://lolstatic-a.akamaihd.net/rso-authenticator-ui/0.123.4/assets/arcane_dsktp_centerAlignedCrd_BG_2x.51650ec8.jpg");
+  background-size: cover;
+  background-position-x: 50%;
+  background-position-y: 50%;
+  background-repeat: no-repeat;
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.box {
+  background: white;
+  padding: 32px 48px 24px;
+  width: 545px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.box h1 {
+  margin-top: 48px;
+  font-size: 25px;
+  line-height: 30px;
+}
+
+input {
+  border: none;
+  width: 100%;
+  height: 44px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  padding: 8px;
+  background-color: rgba(186, 186, 186, 0.2);
+}
+
+input:hover {
+  border: 2px solid rgba(126, 126, 126, 0.15);
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  position: relative;
+  justify-content: center;
+}
+
+.oauth-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.oauth-buttons button {
+  flex: 1;
+  display: block;
+  height: 32px;
+  border-radius: 9.6px;
+  padding: 0px 16px;
+  color: black;
+  border: 2px solid rgba(0, 0, 0, 0.05);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.oauth-buttons button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.oauth-buttons button.facebook {
+  background: rgb(24, 119, 242);
+}
+
+.oauth-buttons button.google {
+  background: white;
+}
+
+.oauth-buttons button.apple {
+  background: black;
+}
+
+.oauth-buttons button.xbox {
+  background: rgb(16, 124, 16);
+}
+
+.oauth-buttons button.playstation {
+  background: rgb(0, 67, 156);
+}
+
+.remember-me {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.remember-me input {
+  width: 18px;
+  height: 18px;
+  background-color: rgba(186, 186, 186, 0.3);
+  align-self: flex-start;
+}
+
+.poc-report-warning {
+  background: yellow;
+  color: black;
+  padding: 16px 8px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.submit-button {
+  background: rgb(213, 50, 53);
+  border-radius: 27px;
+  width: 72px;
+  height: 72px;
+  border: none;
+  margin-top: 80px;
+  margin-bottom: 24px;
+  align-self: center;
+  cursor: pointer;
+}
+
+.submit-button svg {
+  fill: white;
+  width: 32px;
+  height: 32px;
+}
+
+a {
+  color: rgb(74, 74, 74);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: 0.8192px;
+  -webkit-font-smoothing: antialiased;
+}

